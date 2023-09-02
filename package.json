@@ -1,0 +1,16 @@
+{
+  "name": "wsync",
+  "version": "1.0.0",
+  "description": "sync states from backend to frontend with websocket",
+  "main": "hook/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "SimbaFs <me@simbafs.cc>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/react": "^18.2.21",
+    "react": "^18.2.0"
+  }
+}
