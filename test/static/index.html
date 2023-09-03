@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <h1>Hello world</h1>
+    <pre id="text"></pre>
+    <script type="module">
+        import {init} from '/hook/index.js'
+        /** @type {WebSocket} */
+        const ws = init('ws://localhost:3000/ws')
+        ws.addEventListener('message', data => console.log(data))
+        ws.addEventListener('message', data => {
+            document.querySelector('#text').textContent += data.data + '\n'
+        })
+    </script>
+
+</body>
+
+</html>

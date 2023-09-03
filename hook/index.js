@@ -2,7 +2,7 @@
   * init websocket to server with auto reconnecting and ping check
   * @param {string} url 
   */
-function init(url) {
+export function init(url) {
     if (!window) return
     const ws = new WebSocket(url)
 
@@ -10,6 +10,8 @@ function init(url) {
     const onClose = () => {
         // TODO: reconnecting
         console.log(`close websocket connection to ${url}`)
+        console.log('trying to reconnect')
+        setTimeout(() => init(url), 5000)
     }
     const onError = e => console.error(e)
 
@@ -18,6 +20,8 @@ function init(url) {
     ws.addEventListener('error', onError)
 
     window.ws = ws
+
+    return ws
 }
 
 /**
