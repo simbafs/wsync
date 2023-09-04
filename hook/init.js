@@ -1,6 +1,16 @@
 /**
+ * @typedef {Object} Wsync
+ * @property {WebSocket} ws
+ * @property {Object} event
+ * @property {Object} event.map
+ * @property {(key: string, fn: (data: any) => void) => void} event.on
+ * @property {(key: string, data: any) => void} event.emit
+ */
+
+/**
  * init websocket to server with auto reconnecting and ping check
  * @param {string} url
+ * @returns {{ wsync: Wsync, clear: () => void}}
  */
 export default function init(url) {
     if (!window) return
@@ -57,19 +67,3 @@ export default function init(url) {
         },
     }
 }
-
-// /**
-//  * before setState, sync to websocket
-//  * @template T
-//  * @param {T} state
-//  * @param {(state: T) => void} setState
-//  *
-//  * @returns {[T, (state: T) => void]}
-//  *
-//  */
-// function sync(state, setState) {
-//     // TODO
-//
-//     return [state, setState]
-// }
-

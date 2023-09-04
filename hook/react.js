@@ -1,8 +1,11 @@
 import { useEffect, useState, useReducer } from "react";
 import init from './init.js'
 
+/** @typedef {import('./init.js').Wsync} Wsync */
+
 /**
  * @param {string} url 
+ * @return {Wsync}
  */
 export default function useWsync(url) {
     const [wsync, setWsync] = useState(null)
@@ -18,8 +21,7 @@ export default function useWsync(url) {
 
 /**
  * @template T
- * @param {object} wsync 
- * @param {WebSocket} wsync.ws
+ * @param {Wsync} wsync 
  * @param {string} key 
  * @param {T} [initState]
  * @returns {[T, React.Dispatch<T>]}
@@ -70,7 +72,7 @@ export function useWsState(wsync, key, initState) {
  * @template A
  * @template I
  *
- * @param {WebSocket} ws 
+ * @param {Wsync} wsync 
  * @param {string} key 
  * @param {Reducer<S, A>} reducer 
  * @param {S | I} initArgs 
@@ -78,7 +80,7 @@ export function useWsState(wsync, key, initState) {
  * 
  * @returns {[S, React.Dispatch<A>]}
  */
-export function useWsReducer(ws, key, reducer, initArgs, init) {
+export function useWsReducer(wsync, key, reducer, initArgs, init) {
     const [state, updateState] = useReducer(reducer, initArgs, init)
 
     return [state, updateState]

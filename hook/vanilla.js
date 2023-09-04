@@ -1,13 +1,23 @@
 import initWS from './init.js'
 
+/**
+ * @callback syncElement
+ * @param {HTMLElement} element 
+ * @param {any} initState 
+ * @param {string} [key='value'] 
+ * @return {void}
+ */
+
+// from https://github.com/jsdoc/jsdoc/issues/1199#issuecomment-457227207
+/** @typedef {{syncElement: syncElement} & import('./init.js').Wsync} EWsync */
+
+/**
+ * @param {string} url 
+ * @return {EWsync}
+ */
 export default function init(url) {
     const { clear, wsync } = initWS(url)
 
-    /**
-      * @param {HTMLElement} element 
-      * @param {any} initState 
-      * @param {string} [key='value'] 
-      */
     function syncElement(element, initState, key = 'value') {
         const { wsyncKey } = element.dataset
         wsync.event.on(wsyncKey, data => {
@@ -46,4 +56,3 @@ export default function init(url) {
     }
 }
 
-// for vanilla js
