@@ -28,7 +28,7 @@ type Wsync struct {
 }
 
 func (ws *Wsync) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.URL.Path)
+	// fmt.Println(r.URL.Path)
 	// upgrade to websocket
 
 	if key := r.URL.Query().Get("key"); key != "" {
@@ -52,7 +52,7 @@ type wsData struct {
 
 func New(storage Storage) *Wsync {
 	hub := websocket.NewHub(func(from *websocket.Client, in []byte, out chan []byte) {
-		fmt.Printf("from %s: %s\n", from.ID, in)
+		// fmt.Printf("from %s: %s\n", from.ID, in)
 		if string(in[:4]) == "updt" {
 			data := wsData{}
 			if err := json.Unmarshal(in[4:], &data); err != nil {
@@ -82,7 +82,7 @@ func New(storage Storage) *Wsync {
 			keys = r.URL.Query()["key"]
 		}
 
-		fmt.Println("keys", keys)
+		// fmt.Println("keys", keys)
 
 		result := map[string]string{}
 		for _, key := range keys {

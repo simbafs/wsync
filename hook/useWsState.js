@@ -10,6 +10,20 @@ import { useEffect, useState } from "react";
  */
 export default function useWsState(wsync, key, initState) {
     const [state, setState] = useState(initState)
+
+    useEffect(() => {
+        fetch(`/get?key=${key}`)
+            .then(res => {
+                if (res.status === 200) return res.json()
+                else throw res.text()
+            })
+            .then(data => {
+                if (!data[key]) return
+                setState(data[key])
+            })
+            .catch(e => console.error(e))
+    }, [])
+
     useEffect(() => {
         if (!wsync || wsync.ws.readyState !== 1) return
 
