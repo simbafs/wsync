@@ -2,10 +2,13 @@
 
 Wsync is a package designed to synchronize states between the server and the browser using WebSockets. This package includes a handler for creating a Go HTTP server and provides helpers for vanilla JS. Support for React hooks is currently under development. For detailed usage examples, please visit the [example/vanilla](./example/vanilla/) directory.
 
+> [!IMPORTANT]  
+> This project is in its very early stages, so please note that everything is subject to change with each new commit. I will do my utmost to keep this README updated promptly.
+
 ## vanilla
 
 > [!WARNING]  
-> `wsync.syncElement` change in the feature
+> `wsync.syncElement` change in the feature.
 
 ```go
 func main() {
@@ -36,20 +39,14 @@ func main() {
 
 ```js
 function App() {
-	const [wsync, setWsync] = useState(null)
-	const [count, setCount] = useWsState(wsync, 'count', 0)
+  const wsync = useWsync('ws://localhost:3000/ws')
+  const [count, setCount] = useWsState(wsync, 'count', 0)
 
-	useEffect(() => {
-		const { wsync, clear } = init('ws://localhost:3000/ws')
-		setWsync(wsync)
-		return clear
-	}, [])
-
-	return (
-		<>
-			<p>{count}</p>
-			<button onClick={() => setCount(c => +c + 1 + '')}>Add</button>
-		</>
-	)
+  return (
+    <>
+      <p>{count}</p>
+      <button onClick={() => setCount(c => + c + 1 + '')}>Add</button>
+    </>
+  )
 }
 ```

@@ -1,17 +1,8 @@
-import useWsState from '../../../hook/useWsState'
-import init from '../../../hook/init'
-import { useEffect, useState } from 'react'
+import useWsync, { useWsState } from '../../vanilla/static/hook/react'
 
 function App() {
-  const [wsync, setWsync] = useState(null)
+  const wsync = useWsync('ws://localhost:3000/ws')
   const [count, setCount] = useWsState(wsync, 'count', 0)
-
-  useEffect(() => {
-    const { wsync, clear } = init('ws://localhost:3000/ws')
-    console.log({ wsync })
-    setWsync(wsync)
-    return clear
-  }, [])
 
   return (
     <>
