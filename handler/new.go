@@ -52,6 +52,7 @@ type wsData struct {
 
 func New(storage Storage) *Wsync {
 	hub := websocket.NewHub(func(from *websocket.Client, in []byte, out chan []byte) {
+		fmt.Printf("from %s: %s\n", from.ID, in)
 		if string(in[:4]) == "updt" {
 			data := wsData{}
 			if err := json.Unmarshal(in[4:], &data); err != nil {

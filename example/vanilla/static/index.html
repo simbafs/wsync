@@ -14,14 +14,14 @@
     <script type="module">
         import init from '/hook/vanilla.js'
 
-        const {syncElement, ws} = init('ws://localhost:3000/ws')
+        const {wsync} = init('ws://localhost:3000/ws')
 
         /** @type {WebSocket} */
-        ws.addEventListener('message', data => {
+        wsync.ws.addEventListener('message', data => {
             document.querySelector('#text').textContent += data.data + '\n'
         })
 
-        syncElement(document.querySelector('[data-wsync-key]'), 'value')
+        wsync.syncElement(document.querySelector('[data-wsync-key]'), 'value')
     </script>
 </body>
 
