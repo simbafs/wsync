@@ -11,7 +11,7 @@ import (
 func main() {
 	ws := wsync.New(mapstorage.New())
 	http.Handle("/ws", ws)
-	http.Handle("/all", ws.All)
+	http.Handle("/get", ws.Get)
 
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }

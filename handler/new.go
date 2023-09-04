@@ -23,8 +23,8 @@ type Wsync struct {
 	IO *websocket.IO
 	// Storage store server state
 	Storage Storage
-	// http handler to return all states
-	All http.HandlerFunc
+	// http handler to return states
+	Get http.HandlerFunc
 }
 
 func (ws *Wsync) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -68,20 +68,30 @@ func New(storage Storage) *Wsync {
 		}
 	})
 	go hub.Run()
-	all := func(w http.ResponseWriter, r *http.Request) {
-		// return all data
-		keys, err := storage.Key()
-		if err != nil {
-			fmt.Fprintf(w, "get keys: %s", err)
-			return
+	get := func(w http.ResponseWriter, r *http.Request) {
+		var keys []string
+		if r.URL.Query().Get("filter") == "all" {
+			var err error
+			keys, err = storage.Key()
+			if err != nil {
+				w.WriteHeader(http.StatusNotFound)
+				fmt.Fprintf(w, "get keys: %s", err)
+				return
+			}
+		} else {
+			keys = r.URL.Query()["key"]
 		}
+
+		fmt.Println("keys", keys)
 
 		result := map[string]string{}
 		for _, key := range keys {
 			value, err := storage.Get(key)
 			if err != nil {
-				fmt.Fprintf(w, "iterate in keys: %s", err)
-				return
+				continue
+				// w.WriteHeader(http.StatusNotFound)
+				// fmt.Fprintf(w, "iterate in keys: %s", err)
+				// return
 			}
 
 			result[key] = value
@@ -89,6 +99,7 @@ func New(storage Storage) *Wsync {
 
 		data, err := json.Marshal(result)
 		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
 			fmt.Fprintf(w, "marshal data: %s", err)
 			return
 		}
@@ -102,6 +113,6 @@ func New(storage Storage) *Wsync {
 		Hub:     hub,
 		IO:      websocket.NewIO(hub),
 		Storage: storage,
-		All:     all,
+		Get:     get,
 	}
 }
