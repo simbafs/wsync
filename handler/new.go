@@ -74,7 +74,7 @@ func New(storage Storage) *Wsync {
 			var err error
 			keys, err = storage.Key()
 			if err != nil {
-				w.WriteHeader(http.StatusNotFound)
+				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "get keys: %s", err)
 				return
 			}
@@ -89,7 +89,7 @@ func New(storage Storage) *Wsync {
 			value, err := storage.Get(key)
 			if err != nil {
 				continue
-				// w.WriteHeader(http.StatusNotFound)
+				// w.WriteHeader(http.StatusBadRequest)
 				// fmt.Fprintf(w, "iterate in keys: %s", err)
 				// return
 			}
@@ -99,7 +99,7 @@ func New(storage Storage) *Wsync {
 
 		data, err := json.Marshal(result)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
+			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, "marshal data: %s", err)
 			return
 		}
