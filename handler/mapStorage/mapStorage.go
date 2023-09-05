@@ -6,22 +6,22 @@ import "errors"
 var ErrorKeyNotFound = errors.New("key not found")
 
 type MapStorage struct {
-	data map[string]string
+	data map[string]any
 }
 
 func New() MapStorage {
 	m := MapStorage{}
-	m.data = make(map[string]string)
+	m.data = make(map[string]any)
 
 	return m
 }
 
-func (m MapStorage) Set(key string, value string) error {
+func (m MapStorage) Set(key string, value any) error {
 	m.data[key] = value
 	return nil
 }
 
-func (m MapStorage) Get(key string) (string, error) {
+func (m MapStorage) Get(key string) (any, error) {
 	value, ok := m.data[key]
 	if !ok {
 		return "", ErrorKeyNotFound

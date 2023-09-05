@@ -10,8 +10,8 @@ import (
 
 // Storage is a interface to manipulate underlying kv storage like db or json file
 type Storage interface {
-	Set(string, string) error
-	Get(string) (string, error)
+	Set(string, any) error
+	Get(string) (any, error)
 	Remove(string) error
 	Key() ([]string, error)
 }
@@ -28,26 +28,13 @@ type Wsync struct {
 }
 
 func (ws *Wsync) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// fmt.Println(r.URL.Path)
-	// upgrade to websocket
-
-	if key := r.URL.Query().Get("key"); key != "" {
-		value, err := ws.Storage.Get(key)
-		if err != nil {
-			fmt.Fprintf(w, "get value from key: %s", err)
-		}
-
-		fmt.Fprintf(w, value)
-		return
-	}
-
 	websocket.ServeWs(ws.Hub, w, r)
 }
 
 type wsData struct {
 	// Op    string `json:"op"`
 	Key   string `json:"key"`
-	Value string `json:"value"`
+	Value any    `json:"value"`
 }
 
 func New(storage Storage) *Wsync {
@@ -56,11 +43,11 @@ func New(storage Storage) *Wsync {
 		if string(in[:4]) == "updt" {
 			data := wsData{}
 			if err := json.Unmarshal(in[4:], &data); err != nil {
-				from.Send <- []byte(fmt.Sprintf("mesgerror occur when parse json"))
+				from.Send <- []byte(fmt.Sprintf("mesgerror occur when parse json: %s", err))
 				return
 			}
 			if err := storage.Set(data.Key, data.Value); err != nil {
-				from.Send <- []byte(fmt.Sprintf("mesgerror occur when store data"))
+				from.Send <- []byte(fmt.Sprintf("mesgerror occur when store data: %s", err))
 				return
 
 			}
@@ -84,7 +71,7 @@ func New(storage Storage) *Wsync {
 
 		// fmt.Println("keys", keys)
 
-		result := map[string]string{}
+		result := map[string]any{}
 		for _, key := range keys {
 			value, err := storage.Get(key)
 			if err != nil {

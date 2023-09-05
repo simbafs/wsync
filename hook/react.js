@@ -48,7 +48,7 @@ export function useWsState(wsync, key, initState) {
         // console.log(ws)
         wsync.ws.send(`updt${JSON.stringify({
             key,
-            value: String(state),
+            value: state,
         })}`)
     }, [state, wsync?.ws?.readyState, key])
 

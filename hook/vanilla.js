@@ -38,6 +38,7 @@ export default function init(url) {
             .catch(e => console.error(e))
 
         element.oninput = e => {
+            console.log({ value: e.target[key] })
             wsync.ws.send(
                 `updt${JSON.stringify({
                     key: wsyncKey,
