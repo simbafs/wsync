@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} Wsync
  * @property {WebSocket} ws
- * @property {Object} event
+ * @property {Object} val
  * @property {Object} event.map
  * @property {(key: string, fn: (data: any) => void) => void} event.on
  * @property {(key: string, data: any) => void} event.emit
@@ -41,6 +41,7 @@ export default function init(url) {
     }
     const onError = e => console.error(e)
     const onMessage = data => {
+        console.log(data)
         const obj = JSON.parse(data.data.slice(4))
         event.emit(obj.key, obj.value)
     }
@@ -50,9 +51,14 @@ export default function init(url) {
     ws.addEventListener('error', onError)
     ws.addEventListener('message', onMessage)
 
+    function update(key, value) {
+        ws.send(`updt${JSON.stringify({ key, value })}`)
+    }
+
     const wsync = {
         ws,
         event,
+        update,
     }
 
     window.wsync = wsync

@@ -40,7 +40,9 @@ type wsData struct {
 func New(storage Storage) *Wsync {
 	hub := websocket.NewHub(func(from *websocket.Client, in []byte, out chan []byte) {
 		// fmt.Printf("from %s: %s\n", from.ID, in)
-		if string(in[:4]) == "updt" {
+		switch string(in[:4]) {
+		case "updt":
+			fmt.Println(string(in))
 			data := wsData{}
 			if err := json.Unmarshal(in[4:], &data); err != nil {
 				from.Send <- []byte(fmt.Sprintf("mesgerror occur when parse json: %s", err))
@@ -52,6 +54,8 @@ func New(storage Storage) *Wsync {
 
 			}
 			out <- in
+		case "ping":
+			from.Send <- []byte("pong")
 		}
 	})
 	go hub.Run()
