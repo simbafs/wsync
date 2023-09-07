@@ -9,19 +9,39 @@
 
 <body>
     <h1>Hello world</h1>
-    <input type="number" data-wsync-key="count" />
+    <input type="checkbox" data-wsync-key="checkbox" />
+    <input type="color" data-wsync-key="color" />
+    <input type="date" data-wsync-key="date" />
+    <input type="datetime-local" data-wsync-key="datetimeLocal" />
+    <input type="email" data-wsync-key="email" />
+    <input type="month" data-wsync-key="month" />
+    <input type="number" data-wsync-key="number" />
+    <input type="password" data-wsync-key="password" />
+    <input type="radio" data-wsync-key="radio" />
+    <input type="range" data-wsync-key="count" />
+    <input type="search" data-wsync-key="search" />
+    <input type="tel" data-wsync-key="tel" />
+    <input type="text" data-wsync-key="text" />
+    <input type="time" data-wsync-key="time" />
+    <input type="url" data-wsync-key="url" />
+    <input type="week" data-wsync-key="week" />
+
+    <!-- data-wsync-no-auto='0' | 'false' | no can disable auto mount when call wsync.mount -->
+    <p data-wsync-key="count" data-wsync-no-auto="0">hi</p>
+
     <pre id="text"></pre>
     <script type="module">
         import init from '/hook/vanilla.js'
 
-        const {wsync} = init('ws://localhost:3000/ws')
+        const {wsync} = init('ws://localhost:3000/ws', true)
 
         /** @type {WebSocket} */
         wsync.ws.addEventListener('message', data => {
             document.querySelector('#text').textContent += data.data + '\n'
         })
 
-        wsync.syncElement(document.querySelector('[data-wsync-key]'), 0, 'valueAsNumber')
+        // mamunal add
+        wsync.mount(document.querySelector('p'), 'textContent')
     </script>
 </body>
 

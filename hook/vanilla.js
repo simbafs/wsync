@@ -1,7 +1,7 @@
 import initWS from './init.js'
 
 /**
- * @callback syncElement
+ * @callback mount
  * @param {HTMLElement} element 
  * @param {any} initState 
  * @param {string} [key='value'] 
@@ -9,22 +9,23 @@ import initWS from './init.js'
  */
 
 // from https://github.com/jsdoc/jsdoc/issues/1199#issuecomment-457227207
-/** @typedef {{syncElement: syncElement} & import('./init.js').Wsync} EWsync */
+/** @typedef {{mount: mount} & import('./init.js').Wsync} EWsync */
 
 /**
+ * init websocket connection and mount tags with attr `data-wsync-key` if doAutoMountnt is true, you can disable auto mount with attr `data-wsync-no-auto="0"`, then call wsync.mount manually
  * @param {string} url 
+ * @param {boolean} [doAutoMountnt=true] 
  * @return {EWsync}
  */
-export default function init(url) {
+export default function init(url, doAutoMountnt = true) {
     const { clear, wsync } = initWS(url)
 
-    function syncElement(element, initState, key = 'value') {
+    function mount(element, key = 'value') {
         const { wsyncKey } = element.dataset
         wsync.event.on(wsyncKey, data => {
+            console.log(data)
             element[key] = data
         })
-
-        element[key] = initState
 
         fetch(`/get?key=${wsyncKey}`)
             .then(res => {
@@ -48,7 +49,19 @@ export default function init(url) {
         }
     }
 
-    wsync.syncElement = syncElement
+    function autoMount() {
+        for (let element of document.querySelectorAll('[data-wsync-key]')) {
+            const wsyncNoAuto = ['no', 'false', '0'].includes(element.dataset.wsyncNoAuto)
+            if (wsyncNoAuto) continue
+
+            mount(element, getKeyFromElement(element))
+        }
+    }
+
+    wsync.mount = mount
+    wsync.autoMount = autoMount
+
+    if (doAutoMountnt) autoMount()
 
     // syncElement(document.querySelector('#count'))
     return {
@@ -57,3 +70,20 @@ export default function init(url) {
     }
 }
 
+function getKeyFromElement(element) {
+    switch (element.nodeName) {
+        case 'INPUT':
+            switch (element.type) {
+                case 'checkbox':
+                case 'radio':
+                    return 'checked'
+                case 'number':
+                case 'range':
+                    return 'valueAsNumber'
+                default:
+                    return 'value'
+            }
+        default:
+            return 'textContent'
+    }
+}

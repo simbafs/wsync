@@ -22,13 +22,17 @@ func main() {
 ```
 
 ```html
-<input type="number" data-wsync-key="count" />
+<input type="checkbox" data-wsync-key="checkbox" />
+<input type="color" data-wsync-key="color" />
+<input type="datetime-local" data-wsync-key="datetimeLocal" />
+<input type="number" data-wsync-key="number" />
+<input type="range" data-wsync-key="range" />
+<input type="text" data-wsync-key="text" />
 <script type="module">
 	import init from '/hook/vanilla.js'
 
-	const { wsync } = init('wss://localhost:3000/ws')
-
-	wsync.syncElement(document.querySelector('[data-wsync-key]'), 'value')
+    // init() will init websocket connection and than sync all element with `data-wsync-key` if the second parameter is true
+	init('wss://localhost:3000/ws', true)
 </script>
 ```
 
@@ -39,14 +43,14 @@ func main() {
 
 ```js
 function App() {
-  const wsync = useWsync('ws://localhost:3000/ws')
-  const [count, setCount] = useWsState(wsync, 'count', 0)
+	const wsync = useWsync('ws://localhost:3000/ws')
+	const [count, setCount] = useWsState(wsync, 'count', 0)
 
-  return (
-    <>
-      <p>{count}</p>
-      <button onClick={() => setCount(c => + c + 1 + '')}>Add</button>
-    </>
-  )
+	return (
+		<>
+			<p>{count}</p>
+			<button onClick={() => setCount(c => +c + 1 + '')}>Add</button>
+		</>
+	)
 }
 ```
