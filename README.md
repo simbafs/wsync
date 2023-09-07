@@ -31,8 +31,8 @@ func main() {
 <script type="module">
 	import init from '/hook/vanilla.js'
 
-    // init() will init websocket connection and than sync all element with `data-wsync-key` if the second parameter is true
-	init('wss://localhost:3000/ws', true)
+	// init() will init websocket connection and than sync all element with `data-wsync-key` if the second parameter is true
+	init('ws://localhost:3000/ws', true)
 </script>
 ```
 
@@ -49,7 +49,7 @@ function App() {
 	return (
 		<>
 			<p>{count}</p>
-			<button onClick={() => setCount(c => +c + 1 + '')}>Add</button>
+			<button onClick={() => setCount(c => c + 1)}>Add</button>
 		</>
 	)
 }
